@@ -40,24 +40,13 @@ WEBSITE = "www.cmdtech.co.uk"  # Replace with your desired URL
 DEFAULT_KEY_FILE = "client1.txt"
 
 def load_api_keys(key_file):
-    """Load API keys from a file in the same directory."""
-    try:
-        with open(key_file, "r") as f:
-            lines = f.read().splitlines()
-            if len(lines) != 4:
-                raise ValueError("Key file must contain 4 lines: Consumer Key, Consumer Secret, Access Token, Access Token Secret")
-            return {
-                "consumer_key": lines[0].strip(),
-                "consumer_secret": lines[1].strip(),
-                "access_token": lines[2].strip(),
-                "access_token_secret": lines[3].strip()
-            }
-    except FileNotFoundError:
-        print(f"Error: {key_file} not found in {os.getcwd()}")
-        sys.exit(1)
-    except Exception as e:
-        print(f"Error reading {key_file}: {e}")
-        sys.exit(1)
+    prefix = key_file.replace('.txt', '').upper()
+    return {
+        "consumer_key": os.environ[f"{prefix}_CONSUMER_KEY"],
+        "consumer_secret": os.environ[f"{prefix}_CONSUMER_SECRET"],
+        "access_token": os.environ[f"{prefix}_ACCESS_TOKEN"],
+        "access_token_secret": os.environ[f"{prefix}_ACCESS_TOKEN_SECRET"]
+    }
 
 def post_tweet(key_file):
     """Post a random RSS feed item to X with a website and comment."""
